@@ -1,0 +1,58 @@
+silly comment. Just styling, but please, define classes with Capital letters: as in GammaMigration :)
+
+mind because of using forEach, all these promises are not awaited. So you'll run all the files concurrently.
+
+again, in here you are losing the promise... so it will finish without waiting for this... and it if fails, it will create an unhandledRejection error
+
+Promise.all runs all at the same time
+
+Upload and delete should be in the before and after steps. If you run only the test "should complete the flow of asset creation and collection creation", it will fail.
+On top of that: we should mock the services as much as we can:
+
+API calls (using nock): An example here: https://git.adstream.com/xmg-workflows/Gamma/blob/WF-3659/src/jobs/OnDelivery.spec.ts#L48
+
+S3 (maybe using the docker version of it?): Here's an example of how to use a local dockerised version of S3: https://git.adstream.com/xmg-workflows/FFMPEGTranscodeService/blob/develop/test/docker-compose.yml#L11
+
+****************************************************************************************************
+
+the idea is to extract from as-toolkit the logic of the Stomp client so we can install smaller libraries. Installing as-toolkit in the "smaller" library defeats the purpose
+
+please, mind the formatting and indentation
+
+I'm sure we can get the same without using Ramda
+
+since you are installing @types/stompit, maybe the types are already well defined and there is no need to define it here. If not, that's fine.
+
+Please, use the Joi validation for connections, reconnect and channelPool defined in as-emitter (https://git.adstream.com/xmg-workflows/as-emitter/blob/master/src/Emitters/Stomp/schema.ts).
+We've learned the best practices and default values over time to ensure a stable connection and self-recovery.
+
+there is a reason why we wrapped the callback with this.processMessage (check as-emitter's latest way of doing so).
+
+so we are hanging here forever since we don't ack/nack the message.
+
+we are silencing the error and will never know it happened (and the app will think it's subscribed but it's not...
+
+if the file mocha.opts is created, this can be me rewritten as simply "test": "mocha"
+
+I think we can get rid of this one
+
+If you update the gulpfile from ts-boilerplate, you can remove this guy (and some others)
+
+since we are using an async method, let's use await instead of so much .then nesting
+
+publish and send are the same :)
+For backwards compatibility, let's keep it, but there is no need to implement it twice. One can call the other.
+
+I like this approach of inline error ? rej(error) : res(ch). Please use it instead of all those many around the code fromNullable(error).map((err) => reject(err)).getOrElseL(() => resolve(ch));
+
+This is needed because of the comment. I believe it's now a public property in the connections array. Please, use the new config property and we are good to remove this in that case
+
+this was corrected by @Francesco.Iesu in the past. What were the right values? the ones in as-emitter?
+
+I think this method is needed when used as a library (not only an emitter)
+
+can we please get rid of Ramda? We are using it for very basic things and it's a 4MB library :)
+
+**********************************************************************************************************8
+
+
